@@ -1,0 +1,82 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Bikes_Management_System
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+        private void populateData()
+        {
+            con.Open();
+            DataTable dt = new DataTable();
+            SqlDataAdapter adapt = new SqlDataAdapter("select * from tblCarDetails", con);
+            adapt.Fill(dt);
+            dataGridView1.DataSource = dt;
+            con.Close();
+        }
+        private void ClearControls()
+        {
+            textBox1.Text = "";
+            textBox2.Text = "";
+            textBox3.Text = "";
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (textBox1.Text != "" && textBox2.Text != "" && textBox3.Text != "")
+            {
+                SqlCommand cmd = new SqlCommand("Insert into tblCarDetails(Name,Model,Years) values(@name,@model,@year)", con);
+                con.Open();
+                cmd.Parameters.AddWithValue("@name", textBox1.Text);
+                cmd.Parameters.AddWithValue("@model", textBox2.Text);
+                cmd.Parameters.AddWithValue("@Year", textBox3.Text);
+                cmd.ExecuteNonQuery();
+                con.Close();
+                MessageBox.Show("Car Details has been Inserted Successfully");
+                populateData();
+                ClearControls();
+            }
+            else
+            {
+                MessageBox.Show("Please Enter Car Details");
+            }
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (textBox1.Text != "" && textBox2.Text != "" && textBox3.Text != "")
+            {
+                SqlCommand cmd = new SqlCommand("Update tblCarDetails set Names=@name,Model=@model,Year=@year WHERE id=@Id", con);
+                con.Open();
+                cmd.Parameters.AddWithValue("@Id", carId);
+                cmd.Parameters.AddWithValue("@name", textBox1.Text);
+                cmd.Parameters.AddWithValue("@model", textBox2.Text);
+                cmd.Parameters.AddWithValue("@Year", textBox3.Text);
+                cmd.ExecuteNonQuery();
+                con.Close();
+                MessageBox.Show("Car Details has been Inserted Successfully");
+                populateData();
+                ClearControls();
+            }
+            else
+            {
+                MessageBox.Show("Please Enter Car Details");
+            }
+        }
+    }
+}
